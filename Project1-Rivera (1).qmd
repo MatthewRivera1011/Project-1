@@ -1,0 +1,133 @@
+---
+title: "Project1-Rivera"
+author: "M.Rivera"
+format: docx
+editor: visual
+---
+
+# Life Expectancy Trends in Kuwait Compared to the United States
+
+## Section 1: Introduction
+
+Found in the Middle East, Kuwait has gone through quick social and economic change in recent years (WHO, 2023; Mokdad et al., 2016). Despite its economic prosperity and oil wealth, the country faces public health issues due to a high and rising prevalence of noncommunicable diseases, such as obesity, diabetes, and cardiovascular disease (Mokdad et al., 2016; Ng et al., 2014). Even while health care spending is high, its economic benefits are not always matched by health results (Anderson et al., 2003; Deaton, 2013).
+
+We examine the relationship between economic prosperity and population health in various social and health system contexts, especially looking at GDP per capita and life expectancy, in comparison to the United States.
+
+## Section 2: Data Preparation & Descriptive Exploration
+
+### Filter the Data
+
+```{r}
+library(tidyverse)
+library(gapminder)
+
+gapminder
+```
+
+```{r}
+# Filter data for Kuwait
+kuwait_df <- gapminder %>%
+  filter(country == "Kuwait")
+kuwait_df
+
+# Filter data for United States
+us_df <- gapminder %>%
+  filter(country == "United States")
+us_df
+
+# Filter dataset for both
+compare_df <- gapminder %>%
+  filter(country %in% c("Kuwait", "United States"))
+compare_df
+```
+
+### Descriptive Statistics
+
+```{r}
+# Kuwait
+mean_lifeExp_kw <- mean(kuwait_df$lifeExp)
+sd_lifeExp_kw <- sd(kuwait_df$lifeExp)
+n_years_kw <- length(unique(kuwait_df$year))
+```
+
+Across 'r n_years_kw' years of available data, the mean life expectancy in Kuwait was 'r mean_lifeExp_kw' years (SD = 'r sd_lifeExp_kw').
+
+```{r}
+mean_lifeExp_us <- mean(us_df$lifeExp)
+sd_lifeExp_us <- sd(us_df$lifeExp)
+n_years_us <- length(unique(us_df$year))
+```
+
+Across 'r n_years_us' years of available data, the mean life expectancy in the United States was 'r mean_lifeExp_us' years (SD = \`r sd_lifeExp_us').
+
+##Section 3: Visualizations
+
+### Life Expectancy Over Time - Kuwait vs U.S.
+
+```{r}
+ggplot(compare_df,
+       aes(
+         x = year, 
+         y = lifeExp, 
+         color = country)
+       ) +
+  geom_line () +
+  geom_point() +
+  labs(
+    title = "Life Expectancy Over Time: Kuwait vs United States",
+    x = "Year",
+    y = "Life Expectancy (years)",
+    color = "Country"
+  ) 
+```
+
+Between 1952 and 2007, both Kuwait and the US had steady increases in life expectancy. Kuwait saw faster increases, especially from the 1960s through the 1980s, whereas the United States maintained a steadily greater life expectancy throughout the research period. This trend indicates that Kuwait had a period of rapid health improvement, which was probably brought on by improvements in living circumstances, increased access to healthcare, and economic prosperity (Cutler et al., 2006; Marmot, 2005). Even with these improvements, Kuwait's life expectancy by 2007 did not completely match that of the United States.
+
+### GDP Per Capita vs Life Expectancy
+
+```{r}
+ggplot(compare_df, 
+       aes(
+         x = gdpPercap,
+         y = lifeExp,
+         color = country)
+       ) +
+  geom_point() +
+  scale_x_log10() +
+  labs(
+    title = "Life Expectancy vs GDP per Capita: Kuwait vs United States",
+    x = "GDP per Capita (log scale)",
+    y = "Life Expectancy (years)",
+    color = "Country"
+  ) 
+```
+
+For both Kuwait and the US, life expectancy is often greater in countries with higher GDP per capita. At equivalent or greater levels of economic production, Kuwait's life expectancy is still lower than that of the US, suggesting that population health is not only determined by economic well-being (Marmot, 2005; Deaton, 2013). This research emphasizes the significance of the allocation and investment of resources in social services, health systems, and preventative care. The observed disparity may also be caused by variations in healthcare access, chronic illness load, and health practices (Mokdad et al., 2016).
+
+## Section 4: Data Quality & Limitations
+
+Life expectancy, population, and GDP per capita for Kuwait and the US are all complete in the Gapminder data-set utilized in this research, allowing for reliable descriptive comparisons over time; however, the capacity to analyze current trends in population health or short-term changes is limited because the data are only available for observations made every five years between 1952 and 2007.
+
+Furthermore, because all metrics are presented as national averages, within-country differences in socioeconomic level, gender, race, or immigration status are not captured (Deaton, 2013; Marmot, 2005). The dataset's capacity to explain observed variations in life expectancy is further limited by its absence of data on healthcare systems, disease-specific mortality, and policy initiatives; therefore, rather than being causative, the results of this research should be understood as descriptive.
+
+## Section 5: Reflection
+
+Being able to accurately relay information in R and convert descriptive data and visuals into understandable public health findings was a rewarding experience. One interesting finding was that despite Kuwait's high GDP per capita, life expectancy increased quickly during times of economic boom and the country continued to lag behind the US. This somewhat unexpected conclusion supports the notion that economic expansion by itself does not provide the best possible outcomes for population health (Marmot, 2005; Deaton, 2013). If more information were available, I would like to investigate the ways in which the structure of the healthcare system, the frequency of chronic diseases, and the dynamics of the population affect the variations in life expectancy among high-income nations. The importance of descriptive research as a starting point for more complex analysis was understood well doing this project.
+
+## References
+
+Anderson, G. F., Reinhardt, U. E., Hussey, P. S., & Petrosyan, V. (2003). It’s the prices, stupid: Why the United States is so different from other countries. Health Affairs, 22(3), 89–105. https://www.healthaffairs.org/doi/10.1377/hlthaff.22.3.89
+
+The determinants of mortality. Journal of Economic Perspectives, 20(3), 97–120. https://www.aeaweb.org/articles?id=10.1257/jep.20.3.97
+
+Deaton, A. (2013). The great escape: Health, wealth, and the origins of inequality. Princeton University Press.
+
+Marmot, M. (2005). Social determinants of health inequalities. The Lancet, 365(9464), 1099–1104. https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(05)71146-6/abstract
+
+Mokdad, A. H., et al. (2016). Health in times of uncertainty in the Eastern Mediterranean Region, 1990–2013. The Lancet Global Health, 4(10), e704–e713. https://www.thelancet.com/journals/langlo/article/PIIS2214-109X(16)30168-1/fulltext
+
+Ng, M., et al. (2014). Global, regional, and national prevalence of overweight and obesity in adults. The Lancet, 384(9945), 766–781. https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(14)60460-8/abstract
+
+World Health Organization. (2023). World health statistics 2023: Monitoring health for the SDGs. WHO Press.
+
+Gapminder Foundation. (2024). Gapminder data documentation.
